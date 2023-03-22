@@ -1,7 +1,7 @@
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import { createHtmlPlugin } from 'vite-plugin-html'
-import basicSsl from '@vitejs/plugin-basic-ssl'
+import { nodePolyfills } from 'vite-plugin-node-polyfills'
 import { resolve } from 'path';
 import { RPC_ENDPOINT, WALLET_CONNECT_BRIDGE } from './src/config'
 
@@ -16,15 +16,18 @@ function getHtmlInjectParams() {
     rpcDomain,
     `wss://*.${walletConnectDomain}`,
     `wss://${walletConnectDomain}`,
+    `https://api.developer.tor.us`
   ].join(' ')
 
-  return { connectSrc };
+  const frameSrc = 'https://beta.openlogin.com'
+
+  return { connectSrc, frameSrc };
 }
 
 export default defineConfig({
   plugins: [
+    nodePolyfills(),
     vue(),
-    basicSsl(),
     createHtmlPlugin({
       minify: true,
       inject: {
@@ -35,7 +38,7 @@ export default defineConfig({
   server: {
     host: '0.0.0.0',
     port: 31801,
-    https: true,
+    // https: true,
   },
   resolve: {
     alias: {

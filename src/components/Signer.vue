@@ -14,8 +14,11 @@
         </div>
       </div>
       <div v-else>
-        <button v-for="(_, type) of offlineSignerLoader" @click="initSigner(type)">
-          Init Signer (by {{ type }})
+        <button v-for="(_, type) of keplrOfflineSignerLoader" @click="initKeplrSigner(type)">
+          Init Keplr Signer (by {{ type }})
+        </button>
+        <button @click="initWeb3AuthSigner()">
+          Init Web3Auth Signer
         </button>
       </div>
     </div>
@@ -25,7 +28,7 @@
 <script lang="ts" setup>
 import { ref, computed } from 'vue';
 import { useSignerStore } from '@/stores';
-import { offlineSignerLoader, WalletType } from '@/stores/signer';
+import { offlineSignerLoader as keplrOfflineSignerLoader, WalletType } from '@/stores/signer';
 
 const store = useSignerStore();
 
@@ -52,7 +55,11 @@ function logoutSigner() {
   store.logout();
 }
 
-async function initSigner(type: WalletType) {
-  store.init(type);
+async function initKeplrSigner(type: WalletType) {
+  store.initKeplr(type);
+}
+
+async function initWeb3AuthSigner() {
+  store.initWeb3Auth();
 }
 </script>

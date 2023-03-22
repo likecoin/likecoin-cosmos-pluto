@@ -52,3 +52,24 @@ export const KEPLR_CHAIN_INFO = {
   "features": ["ibc-transfer", "ibc-go"]
 };
 export const WALLET_CONNECT_BRIDGE = 'https://bridge.walletconnect.org';
+
+export const WEB3AUTH_CONFIG = {
+  // register on Web3Auth dashboard to get clientId
+  clientId: 'CLIENT_ID',
+  chainConfig: {
+    chainNamespace: 'other',
+    chainId: CHAIN_ID,
+    rpcTarget: RPC_ENDPOINT,
+    displayName: 'LikeCoin chain',
+    blockExplorer: 'https://mintscan.io/likecoin',
+    decimals: DENOM_EXPONENT,
+    ticker: DENOM,
+    tickerName: COIN_NAME,
+  },
+  uiConfig: {
+    appLogo: 'https://liker.land/favicon.ico',
+    defaultLanguage: 'zh',
+  },
+  authMode: 'DAPP',
+  web3AuthNetwork: 'testnet',
+} as const;

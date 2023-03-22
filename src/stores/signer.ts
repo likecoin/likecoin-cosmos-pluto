@@ -5,7 +5,9 @@ import { OfflineSigner } from '@cosmjs/proto-signing';
 import {
   getBrowserKeplrOfflineSigner,
   getMobileKeplrOfflineSigner,
-  registerKeplrKeystoreChangeCallback } from '@/keplr/keplr';
+  registerKeplrKeystoreChangeCallback,
+} from '@/keplr/keplr';
+import { getWeb3AuthOfflineSigner } from '@/web3auth/web3auth';
 import { PubKey } from '@/cosmos/pubkey';
 
 export const offlineSignerLoader = {
@@ -39,7 +41,16 @@ export const useSignerStore = defineStore('signer', {
     }
   },
   actions: {
-    async init(type: WalletType) {
+    async setSigner(signer: OfflineSigner) {
+      const account = (await signer.getAccounts())[0];
+      this.offlineSigner = signer;
+      this.publicKey = PubKey.fromKeplrAccount(account)
+    },
+    async initWeb3Auth() {
+      this.logout();
+      this.setSigner(await getWeb3AuthOfflineSigner());
+    },
+    async initKeplr(type: WalletType) {
       this.logout();
       this.keplrUnregisterFn = registerKeplrKeystoreChangeCallback(() => {
         this.getFromKeplr(type);
@@ -52,9 +63,7 @@ export const useSignerStore = defineStore('signer', {
         preferNoSetFee: true,
         preferNoSetMemo: true,
       });
-      const account = (await keplrSigner.getAccounts())[0];
-      this.offlineSigner = keplrSigner;
-      this.publicKey = PubKey.fromKeplrAccount(account)
+      this.setSigner(keplrSigner);
     },
     logout() {
       this.offlineSigner = null;
